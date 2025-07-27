@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lo Shu Grid - Ancient Chinese Numerology Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Cinzel:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(205, 133, 63, 0.1) 50%, rgba(160, 82, 45, 0.1) 100%),
+                radial-gradient(circle at center, #1a1a1a 0%, #2d1810 100%);
+            min-height: 100vh;
+            color: #f4e4bc;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Oriental Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(220, 20, 60, 0.05) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -2;
+            animation: patternFloat 30s ease-in-out infinite alternate;
+        }
+        
+        @keyframes patternFloat {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            100% { transform: translateX(20px) translateY(-15px) rotate(2deg); }
+        }
+        
+        /* Floating Cherry Blossoms */
+        .cherry-blossom {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffb3d9 30%, transparent 70%);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            z-index: -1;
+        }
+        
+        .cherry-blossom::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(circle, #ffc0e6 40%, transparent 70%);
+            border-radius: 50%;
+            top: -5px;
+            left: 5px;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Company Header Styles */
+        .company-header {
+            background: 
+                linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(139, 69, 19, 0.15) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 25px;
+            padding: 25px 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .company-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            animation: logoShine 4s ease-in-out infinite;
+        }
+        
+        @keyframes logoShine {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-symbol {
+            font-size: 2.5em;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        .logo-text {
+            text-align: center;
+        }
+        
+        .logo-chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #d4af37;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+        }
+        
+        .logo-english {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8em;
+            font-weight: 500;
+            color: #e6d7a3;
+            letter-spacing: 2px;
+            text-shadow: 0 1px 5px rgba(230, 215, 163, 0.3);
+        }
+        
+        .company-tagline {
+            font-style: italic;
+            color: #f4e4bc;
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        /* Footer Styles */
+        .site-footer {
+            background: 
+                linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(45, 24, 16, 0.9) 100%);
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+            margin-top: 60px;
+            padding: 40px 0 20px 0;
+            position: relative;
+            backdrop-filter: blur(15px);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-logo .logo-chinese {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 1.4em;
+            font-weight: 500;
+            color: #d4af37;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .footer-logo .logo-english {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1em;
+            font-weight: 400;
+            color: #e6d7a3;
+            letter-spacing: 1px;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .footer-divider {
+            color: #d4af37;
+            font-size: 1.5em;
+            opacity: 0.6;
+        }
+        
+        .footer-copyright {
+            color: #f4e4bc;
+            font-size: 1em;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .footer-decorative {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            opacity: 0.6;
+        }
+        
+        .footer-wave {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(212, 175, 55, 0.3) 25%, 
+                rgba(212, 175, 55, 0.6) 50%, 
+                rgba(212, 175, 55, 0.3) 75%, 
+                transparent 100%);
+            animation: waveFlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes waveFlow {
+            0% { transform: translateX(-20px); }
+            100% { transform: translateX(20px); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 60px 20px;
+            background: 
+                linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(139, 69, 19, 0.1) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L90 90 L10 90 Z' fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E");
+            border-radius: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #d4af37, #ffd700, #ffed4e, #d4af37);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: #e6d7a3;
+            font-weight: 300;
+        }
+        
+        .header .chinese-text {
+            font-size: 1.8em;
+            color: #d4af37;
+            font-weight: 500;
+            margin-top: 15px;
+            letter-spacing: 8px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(160, 82, 45, 0.3) 100%);
+            border-radius: 60px;
+            padding: 8px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #f4e4bc;
+            padding: 18px 35px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 16px;
+            font-weight: 400;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(45deg, #d4af37, #b8860b);
+            color: #1a1a1a;
+            font-weight: 600;
+            box-shadow: 
+                0 8px 25px rgba(212, 175, 55, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        .card {
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 19, 0.2) 0%, rgba(160, 82, 45, 0.15) 100%);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #d4af37, transparent, #d4af37);
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .card:hover::before {
+            opacity: 0.1;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 500;
+            color: #d4af37;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            background: rgba(26, 26, 26, 0.8);
+            color: #f4e4bc;
+            font-size: 16px;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 
+                0 0 25px rgba(212, 175, 55, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #d4af37, #b8860b, #d4af37);
+            background-size: 200% 200%;
+            color: #1a1a1a;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 8px 25px rgba(212, 175, 55, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: bgShift 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 30px rgba(212, 175, 55, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .loshu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 360px;
+            margin: 40px auto;
+            padding: 25px;
+            background: 
+                radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            border-radius: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+        }
+        
+        .grid-cell {
+            aspect-ratio: 1;
+            background: 
+                linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(45, 24, 16, 0.8) 100%);
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .grid-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .grid-cell:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 30px rgba(212, 175, 55, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .grid-cell:hover::before {
+            opacity: 1;
+        }
+        
+        .grid-cell.missing {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.3) 0%, rgba(160, 0, 0, 0.3) 100%);
+            border-color: #dc143c;
+            color: #ff6b6b;
+        }
+        
+        .grid-cell.strong {
+            background: linear-gradient(135deg, rgba(0, 100, 0, 0.3) 0%, rgba(34, 139, 34, 0.3) 100%);
+            border-color: #32cd32;
+            color: #90ee90;
+        }
+        
+        .interpretation {
+            margin-top: 40px;
+        }
+        
+        .interpretation h3 {
+            color: #d4af37;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .interpretation-section {
+            margin-bottom: 30px;
+        }
+        
+        .interpretation-section h4 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-family: 'Cinzel', serif;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .number-interpretation {
+            background: 
+                linear-gradient(135deg, rgba(139, 69, 19, 0.15) 0%, rgba(160, 82, 45, 0.1) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #d4af37;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .number-interpretation h5 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .number-interpretation .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .status.missing {
+            background: rgba(220, 20, 60, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #dc143c;
+        }
+        
+        .status.present {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+        
+        .status.strong {
+            background: rgba(50, 205, 50, 0.2);
+            color: #90ee90;
+            border: 1px solid #32cd32;
+        }
+        
+        .remediation {
+            background: 
+                linear-gradient(135deg, rgba(220, 20, 60, 0.1) 0%, rgba(139, 0, 0, 0.1) 100%);
+            border: 1px solid rgba(220, 20, 60, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .remediation h6 {
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(26, 26, 26, 0.5);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid;
+        }
+        
+        .error {
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.2) 0%, rgba(139, 0, 0, 0.2) 100%);
+            border: 1px solid #dc143c;
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .history-section {
+            line-height: 1.9;
+        }
+        
+        .history-section h2 {
+            color: #d4af37;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+        }
+        
+        .history-section h3 {
+            color: #e6d7a3;
+            margin: 30px 0 20px 0;
+            font-size: 1.5em;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .history-section ul {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+        
+        .history-section li {
+            margin-bottom: 10px;
+            color: #f4e4bc;
+        }
+        
+        /* Oriental Decorative Elements */
+        .dragon-border {
+            border-image: linear-gradient(90deg, transparent, #d4af37, transparent) 1;
+            border-top: 2px solid;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .header .chinese-text {
+                font-size: 1.4em;
+                letter-spacing: 4px;
+            }
+            
+            .company-header {
+                padding: 20px 25px;
+            }
+            
+            .logo-container {
+                gap: 15px;
+            }
+            
+            .logo-symbol {
+                font-size: 2em;
+            }
+            
+            .logo-chinese {
+                font-size: 1.8em;
+                letter-spacing: 2px;
+            }
+            
+            .logo-english {
+                font-size: 1.4em;
+                letter-spacing: 1px;
+            }
+            
+            .company-tagline {
+                font-size: 1em;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 25px;
+            }
+            
+            .loshu-grid {
+                max-width: 280px;
+                gap: 10px;
+                padding: 20px;
+            }
+            
+            .grid-cell {
+                font-size: 1.4em;
+            }
+            
+            .legend {
+                gap: 20px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .footer-divider {
+                display: none;
+            }
+        }
+        
+        /* Create cherry blossoms */
+        .cherry-blossom:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 20s; }
+        .cherry-blossom:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 18s; }
+        .cherry-blossom:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 22s; }
+        .cherry-blossom:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 16s; }
+        .cherry-blossom:nth-child(5) { left: 50%; animation-delay: 8s; animation-duration: 24s; }
+        .cherry-blossom:nth-child(6) { left: 60%; animation-delay: 10s; animation-duration: 19s; }
+        .cherry-blossom:nth-child(7) { left: 70%; animation-delay: 12s; animation-duration: 21s; }
+        .cherry-blossom:nth-child(8) { left: 80%; animation-delay: 14s; animation-duration: 17s; }
+        .cherry-blossom:nth-child(9) { left: 90%; animation-delay: 16s; animation-duration: 23s; }
+    </style>
+</head>
+<body>
+    <!-- Floating Cherry Blossoms -->
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    <div class="cherry-blossom"></div>
+    
+    <div class="container">
+        <!-- Company Header with Logo -->
+        <div class="company-header">
+            <div class="logo-container">
+                <div class="logo-symbol">🏮</div>
+                <div class="logo-text">
+                    <div class="logo-chinese">湖邊流行占星</div>
+                    <div class="logo-english">Lakeside PopAstro</div>
+                </div>
+                <div class="logo-symbol">🌸</div>
+            </div>
+            <div class="company-tagline">Where Ancient Wisdom Meets Modern Insight</div>
+        </div>
+
+        <div class="header">
+            <h1>洛書格 Lo Shu Grid</h1>
+            <p class="subtitle">Ancient Chinese Numerology & Destiny Calculator</p>
+            <p class="chinese-text">九宮數理</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('calculator')">數字計算器</button>
+            <button class="tab-btn" onclick="showTab('history')">歷史起源</button>
+            <button class="tab-btn" onclick="showTab('guide')">使用指南</button>
+        </div>
+        
+        <div id="calculator" class="tab-content active">
+            <div class="card">
+                <h2 style="color: #d4af37; text-align: center; margin-bottom: 40px; font-family: 'Cinzel', serif; font-size: 1.8em;">Calculate Your Mystical Lo Shu Grid</h2>
+                
+                <div class="input-group">
+                    <label for="dob">Enter Your Date of Birth (生日):</label>
+                    <input type="date" id="dob" placeholder="Select your birth date">
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="btn" onclick="calculateLoShuGrid()">🔮 Generate My Destiny Grid 🔮</button>
+                </div>
+                
+                <div id="error" class="error" style="display: none;"></div>
+                
+                <div id="results" style="display: none;">
+                    <h3 style="color: #d4af37; text-align: center; margin: 40px 0 30px 0; font-family: 'Cinzel', serif;">Your Personal Lo Shu Grid (你的洛書格)</h3>
+                    
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(45, 24, 16, 0.8) 100%); border-color: #d4af37;"></div>
+                            <span>Present 現有</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.3) 0%, rgba(160, 0, 0, 0.3) 100%); border-color: #dc143c;"></div>
+                            <span>Missing 缺失</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, rgba(0, 100, 0, 0.3) 0%, rgba(34, 139, 34, 0.3) 100%); border-color: #32cd32;"></div>
+                            <span>Strong 強勢</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loshu-grid" id="grid">
+                        <div class="grid-cell" data-number="4"></div>
+                        <div class="grid-cell" data-number="9"></div>
+                        <div class="grid-cell" data-number="2"></div>
+                        <div class="grid-cell" data-number="3"></div>
+                        <div class="grid-cell" data-number="5"></div>
+                        <div class="grid-cell" data-number="7"></div>
+                        <div class="grid-cell" data-number="8"></div>
+                        <div class="grid-cell" data-number="1"></div>
+                        <div class="grid-cell" data-number="6"></div>
+                    </div>
+                    
+                    <div class="interpretation" id="interpretation"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="history" class="tab-content">
+            <div class="card history-section">
+                <h2>洛書的古老起源 - The Ancient Origins of Lo Shu</h2>
+                <div class="dragon-border"></div>
+                
+                <h3>🐢 神龜的傳說 - The Legend of the Divine Turtle</h3>
+                <p>The Lo Shu Grid, known in Chinese as 洛書 (Luòshū), traces its mystical origins back over 4,000 years to ancient China during the legendary reign of Emperor Yu the Great (大禹, 2123-2025 BCE). According to the revered Chinese classic "Shang Shu" (尚書), during catastrophic floods that threatened to engulf the Middle Kingdom, Emperor Yu was walking along the sacred Lo River (洛水) when a divine turtle emerged from the turbulent waters.</p>
+                
+                <p>This celestial turtle, sent by the Jade Emperor himself, bore upon its shell a miraculous pattern of dots arranged in a perfect 3×3 grid. Each row, column, and diagonal summed to the sacred number 15, revealing the first known magic square to humanity. The ancient Chinese sages interpreted this as a heavenly mandate (天命), containing the fundamental principles of cosmic harmony and the blueprint of universal balance.</p>
+                
+                <h3>🏛️ 歷史發展 - Historical Development Through Dynasties</h3>
+                <p>During the Zhou Dynasty (周朝, 1046-256 BCE), court astronomers and philosophers integrated the Lo Shu Grid into the foundational texts of Chinese civilization. The grid became central to the development of:</p>
+                <ul>
+                    <li><strong>風水 (Feng Shui):</strong> The ancient art of harmonizing human existence with the surrounding environment</li>
+                    <li><strong>中醫 (Traditional Chinese Medicine):</strong> Understanding the flow of qi (氣) through the human body</li>
+                    <li><strong>易經 (I Ching):</strong> The Book of Changes, China's oldest divinatory text</li>
+                    <li><strong>道教 (Taoism):</strong> The philosophical system emphasizing harmony with the Tao</li>
+                </ul>
+                
+                <p>During the Han Dynasty (漢朝, 206 BCE - 220 CE), scholars like Liu Xin (劉歆) further refined the interpretive system, associating each number with the Five Elements (五行), Eight Trigrams (八卦), and Nine Palaces (九宮), creating a comprehensive system for understanding human destiny and cosmic influence.</p>
+                
+                <h3>🔢 九個神聖數字 - The Nine Sacred Numbers and Their Cosmic Significance</h3>
+                <p>Each position in the Lo Shu Grid corresponds to different aspects of human existence and cosmic forces:</p>
+                <ul style="margin: 25px 0; padding-left: 35px;">
+                    <li><strong>1 (一) - 坎卦 (Water/Communication):</strong> The flow of expression, creativity, and verbal abilities</li>
+                    <li><strong>2 (二) - 坤卦 (Earth/Intuition):</strong> Sensitivity, cooperation, and psychic perception</li>
+                    <li><strong>3 (三) - 震卦 (Thunder/Thinking):</strong> Logic, analysis, and systematic planning</li>
+                    <li><strong>4 (四) - 巽卦 (Wind/Stability):</strong> Organization, persistence, and methodical work</li>
+                    <li><strong>5 (五) - 中宮 (Center/Freedom):</strong> Adventure, change, and personal liberty</li>
+                    <li><strong>6 (六) - 乾卦 (Heaven/Nurturing):</strong> Love, family responsibility, and caring nature</li>
+                    <li><strong>7 (七) - 兌卦 (Lake/Spirituality):</strong> Learning, teaching, and mystical understanding</li>
+                    <li><strong>8 (八) - 艮卦 (Mountain/Material):</strong> Business acumen, wealth, and worldly success</li>
+                    <li><strong>9 (九) - 離卦 (Fire/Humanitarianism):</strong> Wisdom, completion, and service to humanity</li>
+                </ul>
+                
+                <h3>🌏 現代應用 - Modern Applications Across Cultures</h3>
+                <p>Today, the Lo Shu Grid transcends cultural boundaries, being used by numerologists, life coaches, spiritual advisors, and personal development practitioners worldwide. Its enduring relevance lies in its remarkable accuracy in revealing personality patterns, life challenges, and growth opportunities.</p>
+                
+                <p>The grid serves as a bridge between ancient Eastern wisdom and modern psychological understanding, offering insights that complement contemporary approaches to personal development, career guidance, and relationship counseling.</p>
+                
+                <p>Master practitioners in Taiwan, Hong Kong, Singapore, and mainland China continue to use this system for:</p>
+                <ul style="margin: 20px 0; padding-left: 35px;">
+                    <li>🎯 <strong>Career Guidance:</strong> Identifying optimal professional paths based on natural strengths</li>
+                    <li>💝 <strong>Relationship Compatibility:</strong> Understanding interpersonal dynamics and harmony</li>
+                    <li>🏠 <strong>Feng Shui Applications:</strong> Optimizing living and working environments</li>
+                    <li>🧘 <strong>Spiritual Development:</strong> Guiding meditation practices and spiritual growth</li>
+                    <li>⚕️ <strong>Holistic Healing:</strong> Complementing traditional medicine with energetic balance</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="guide" class="tab-content">
+            <div class="card">
+                <h2 style="color: #d4af37; margin-bottom: 40px; font-family: 'Cinzel', serif; text-align: center;">使用指南 - Complete User Guide</h2>
+                <div class="dragon-border"></div>
+                
+                <h3 style="color: #e6d7a3; font-family: 'Cinzel', serif;">第一步 - Step 1: Enter Your Sacred Birth Date</h3>
+                <p>Your birth date contains the cosmic blueprint of your soul's journey. Simply enter your complete date of birth, and our ancient algorithm will extract all significant numbers that influence your destiny. Each digit carries vibrational energy that shapes your personality and life path.</p>
+                
+                <h3 style="color: #e6d7a3; font-family: 'Cinzel', serif;">第二步 - Step 2: Understanding Your Mystical Grid</h3>
+                <p>Your personal Lo Shu Grid reveals the energetic blueprint of your soul. Each cell represents different aspects of your spiritual and earthly journey:</p>
+                <ul style="margin: 20px 0; padding-left: 35px;">
+                    <li><strong style="color: #ff6b6b;">空格 (Empty cells - Red):</strong> Areas of karmic challenge requiring conscious development</li>
+                    <li><strong style="color: #d4af37;">單數 (Single numbers - Gold):</strong> Balanced aspects of your personality in harmony</li>
+                    <li><strong style="color: #90ee90;">多數 (Multiple numbers - Green):</strong> Your natural gifts and spiritual strengths</li>
+                </ul>
+                
+                <h3 style="color: #e6d7a3; font-family: 'Cinzel', serif;">第三步 - Step 3: Reading the Divine Interpretations</h3>
+                <p>Our comprehensive analysis provides insights into all nine aspects of your being:</p>
+                <ul style="margin: 20px 0; padding-left: 35px;">
+                    <li><strong>Missing Numbers (缺失數字):</strong> Reveal areas where your soul chose to learn and grow in this lifetime</li>
+                    <li><strong>Present Numbers (現有數字):</strong> Show your natural abilities and balanced traits</li>
+                    <li><strong>Strong Numbers (強勢數字):</strong> Indicate your spiritual gifts and areas of mastery</li>
+                    <li><strong>Overall Pattern (整體模式):</strong> Reveals your soul's primary mission and life themes</li>
+                </ul>
+                
+                <h3 style="color: #e6d7a3; font-family: 'Cinzel', serif;">第四步 - Step 4: Applying Sacred Remediation (神聖療法)</h3>
+                <p>For each area needing development, we provide time-tested remediation methods from ancient Chinese tradition:</p>
+                <ul style="margin: 20px 0; padding-left: 35px;">
+                    <li><strong>Daily Practices (日常修行):</strong> Simple exercises to strengthen weak areas</li>
+                    <li><strong>Meditation Techniques (冥想技法):</strong> Specific visualizations for energetic balance</li>
+                    <li><strong>Crystal & Gemstone Therapy (寶石療法):</strong> Sacred stones to amplify positive energies</li>
+                    <li><strong>Lifestyle Harmonization (生活調和):</strong> Environmental and behavioral adjustments</li>
+                    <li><strong>Mantra & Affirmations (咒語確認):</strong> Sacred sounds for spiritual transformation</li>
+                </ul>
+                
+                <h3 style="color: #e6d7a3; font-family: 'Cinzel', serif;">重要提醒 - Important Spiritual Reminders</h3>
+                <p>Remember that the Lo Shu Grid is a sacred mirror reflecting your soul's journey, not a fixed destiny. It serves as divine guidance for self-cultivation and spiritual evolution. Your conscious choices, dedicated practice, and sincere intention ultimately determine your path to enlightenment and fulfillment.</p>
+                
+                <p style="color: #d4af37; font-style: italic; text-align: center; margin-top: 30px;">"天行健，君子以自強不息" - "As Heaven maintains vigor, the superior person strives for self-improvement without cease."</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-chinese">湖邊流行占星</div>
+                <div class="logo-english">Lakeside PopAstro</div>
+            </div>
+            <div class="footer-divider">•</div>
+            <div class="footer-copyright">
+                Copyright © 2025 Arun & Rohit
+            </div>
+        </div>
+        <div class="footer-decorative">
+            <div class="footer-wave"></div>
+        </div>
+    </footer>
+    
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab and mark button as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function calculateLoShuGrid() {
+            const dobInput = document.getElementById('dob');
+            const errorDiv = document.getElementById('error');
+            const resultsDiv = document.getElementById('results');
+            
+            // Clear previous results
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+            
+            if (!dobInput.value) {
+                showError('Please enter your sacred date of birth to unlock your destiny.');
+                return;
+            }
+            
+            const dob = new Date(dobInput.value);
+            const day = dob.getDate();
+            const month = dob.getMonth() + 1;
+            const year = dob.getFullYear();
+            
+            if (isNaN(day) || isNaN(month) || isNaN(year)) {
+                showError('Please enter a valid date to calculate your mystical grid.');
+                return;
+            }
+            
+            // Calculate Lo Shu Grid
+            const numbers = extractNumbers(day, month, year);
+            const gridData = createGridData(numbers);
+            
+            displayGrid(gridData);
+            displayComprehensiveInterpretation(gridData, { day, month, year });
+            
+            resultsDiv.style.display = 'block';
+            
+            // Smooth scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function extractNumbers(day, month, year) {
+            const allNumbers = [];
+            
+            // Add day digits
+            allNumbers.push(...day.toString().split('').map(Number));
+            
+            // Add month digits
+            allNumbers.push(...month.toString().split('').map(Number));
+            
+            // Add year digits
+            allNumbers.push(...year.toString().split('').map(Number));
+            
+            return allNumbers.filter(n => n >= 1 && n <= 9);
+        }
+        
+        function createGridData(numbers) {
+            const gridData = {
+                1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []
+            };
+            
+            numbers.forEach(num => {
+                gridData[num].push(num);
+            });
+            
+            return gridData;
+        }
+        
+        function displayGrid(gridData) {
+            const gridCells = document.querySelectorAll('.grid-cell');
+            
+            gridCells.forEach(cell => {
+                const number = parseInt(cell.dataset.number);
+                const count = gridData[number].length;
+                
+                cell.textContent = count > 0 ? gridData[number].join(' ') : '';
+                
+                // Reset classes
+                cell.className = 'grid-cell';
+                
+                if (count === 0) {
+                    cell.classList.add('missing');
+                } else if (count > 1) {
+                    cell.classList.add('strong');
+                }
+            });
+        }
+        
+        function displayComprehensiveInterpretation(gridData, birthData) {
+            const interpretationDiv = document.getElementById('interpretation');
+            let html = '<h3>🔮 Your Complete Mystical Analysis 你的完整神秘分析</h3>';
+            
+            const interpretations = {
+                1: {
+                    name: '表達溝通 - Communication & Expression',
+                    chineseName: '坎卦 (Water Element)',
+                    element: 'Water 水',
+                    direction: 'North 北',
+                    general: 'This position governs your ability to express thoughts, communicate ideas, and showcase creativity. It represents the flow of energy through speech, writing, and artistic expression.',
+                    missing: 'You may experience challenges in self-expression and communication. Speaking your truth might feel difficult, and you could struggle with creative blocks or fear of public speaking. Your inner voice may feel suppressed.',
+                    present: 'You have a balanced approach to communication. You can express yourself adequately when needed and have moderate creative abilities. Your communication style is neither overpowering nor too reserved.',
+                    strong: 'You are a natural communicator with exceptional speaking and writing abilities. You can articulate complex ideas clearly, inspire others with your words, and have strong creative talents. People are drawn to your expressive nature.',
+                    remediation: 'Practice daily speech exercises, join public speaking clubs like Toastmasters, maintain a creative journal, engage in storytelling, learn new languages, practice active listening, and wear blue gemstones like sapphire or lapis lazuli. Chant the mantra "OM GANAPATAYE NAMAHA" for removing communication obstacles.'
+                },
+                2: {
+                    name: '直覺合作 - Intuition & Cooperation',
+                    chineseName: '坤卦 (Earth Element)',
+                    element: 'Earth 土',
+                    direction: 'Southwest 西南',
+                    general: 'This governs your intuitive abilities, emotional sensitivity, and capacity for cooperation. It represents your ability to work harmoniously with others and trust your inner wisdom.',
+                    missing: 'You may lack intuitive abilities and find teamwork challenging. Trusting your gut feelings might be difficult, and you could struggle with emotional sensitivity or appear insensitive to others\' needs.',
+                    present: 'You have moderate intuitive abilities and can work well in cooperative environments when necessary. Your emotional intelligence is balanced, allowing you to connect with others appropriately.',
+                    strong: 'You possess powerful intuitive gifts and excel in collaborative environments. You can sense others\' emotions easily, have strong psychic abilities, and naturally create harmony in group settings.',
+                    remediation: 'Practice daily meditation, develop psychic abilities through divination, work on team projects, cultivate patience and empathy, study emotional intelligence, and wear moonstone or pearl. Use the affirmation "I trust my inner wisdom and cooperate with divine flow."'
+                },
+                3: {
+                    name: '邏輯思維 - Logic & Analytical Thinking',
+                    chineseName: '震卦 (Thunder Element)',
+                    element: 'Wood 木',
+                    direction: 'East 東',
+                    general: 'This position rules your logical reasoning, analytical abilities, and systematic approach to problem-solving. It governs your capacity for strategic planning and rational decision-making.',
+                    missing: 'You may struggle with logical thinking and systematic planning. Decision-making might be difficult, and you could act impulsively without proper analysis or struggle with organizing thoughts coherently.',
+                    present: 'You have adequate analytical abilities and can plan effectively when needed. Your logical thinking is balanced, allowing you to make reasonable decisions with proper consideration.',
+                    strong: 'You are an exceptional analytical thinker with superior planning abilities. You excel at breaking down complex problems, creating systematic solutions, and making logical decisions under pressure.',
+                    remediation: 'Practice puzzles and brain games, create detailed plans for goals, study mathematics or logic, organize daily schedules, learn strategic games like chess, and wear yellow topaz or citrine. Recite "OM GANAPATAYE NAMAHA" to enhance mental clarity.'
+                },
+                4: {
+                    name: '穩定勤奮 - Stability & Hard Work',
+                    chineseName: '巽卦 (Wind Element)',
+                    element: 'Wood 木',
+                    direction: 'Southeast 東南',
+                    general: 'This governs your capacity for consistent effort, organizational skills, and ability to complete long-term projects. It represents your relationship with routine, structure, and persistent effort.',
+                    missing: 'You may lack patience and persistence, struggling to complete long-term projects. Routine and structure might feel restrictive, and you could have difficulty with consistent effort or reliability.',
+                    present: 'You have a balanced approach to work and stability. You can handle routine when necessary and complete projects with reasonable consistency, though you prefer variety in your approach.',
+                    strong: 'You are naturally hardworking and exceptionally stable, with outstanding organizational skills. You excel at handling responsibility, completing long-term projects, and creating systematic approaches to work.',
+                    remediation: 'Develop consistent daily routines, practice patience through mindfulness, commit to long-term goals, value consistency over quick results, organize your environment, and wear green emerald or jade. Use the mantra "OM GAM GANAPATAYE NAMAHA" for removing obstacles to success.'
+                },
+                5: {
+                    name: '自由冒險 - Freedom & Adventure',
+                    chineseName: '中宮 (Center Element)',
+                    element: 'Earth 土',
+                    direction: 'Center 中央',
+                    general: 'This central position governs your need for freedom, adaptability to change, and adventurous spirit. It represents your relationship with variety, travel, and new experiences.',
+                    missing: 'You may feel trapped by routine and struggle with change. New experiences might seem overwhelming, and you could resist adventure or feel uncomfortable with unpredictability and variety.',
+                    present: 'You have a balanced relationship with freedom and adventure. You can adapt to change when necessary and occasionally enjoy new experiences, though you also appreciate stability.',
+                    strong: 'You are naturally adventurous and freedom-loving with exceptional adaptability. You thrive in dynamic environments, love exploring new possibilities, and inspire others to embrace change.',
+                    remediation: 'Travel regularly, try new experiences weekly, break routines occasionally, embrace change as growth, learn new skills frequently, practice flexibility, and wear turquoise or amazonite. Affirm "I embrace change and flow with life\'s adventures."'
+                },
+                6: {
+                    name: '愛與關懷 - Love & Nurturing',
+                    chineseName: '乾卦 (Heaven Element)',
+                    element: 'Metal 金',
+                    direction: 'Northwest 西北',
+                    general: 'This position governs your capacity for love, family responsibility, and nurturing others. It represents your ability to care for others and create harmonious relationships.',
+                    missing: 'You may struggle with expressing love and caring for others. Family relationships might be challenging, and you could appear emotionally distant or have difficulty with nurturing responsibilities.',
+                    present: 'You have a balanced approach to love and nurturing. You can care for others appropriately and maintain healthy family relationships, though you may not be overly demonstrative.',
+                    strong: 'You are naturally loving and nurturing with a powerful sense of family responsibility. You provide exceptional comfort and support to others and create warm, harmonious relationships.',
+                    remediation: 'Practice daily acts of kindness, spend quality time with family, develop empathy through service, show affection openly, volunteer for caring causes, and wear rose quartz or green aventurine. Use the mantra "OM MANI PADME HUM" to cultivate compassion.'
+                },
+                7: {
+                    name: '靈性學習 - Spirituality & Learning',
+                    chineseName: '兌卦 (Lake Element)',
+                    element: 'Metal 金',
+                    direction: 'West 西',
+                    general: 'This governs your spiritual inclinations, love of learning, and capacity for teaching others. It represents your connection to higher wisdom and mystical understanding.',
+                    missing: 'You may lack interest in spiritual matters and struggle with deep learning. Self-reflection and meditation might seem pointless, and you could have difficulty accessing higher wisdom or teaching others.',
+                    present: 'You have moderate spiritual inclinations and learning abilities. You can engage with deeper subjects when interested and occasionally enjoy spiritual or philosophical discussions.',
+                    strong: 'You have profound spiritual inclinations and exceptional learning abilities. You naturally understand complex spiritual concepts, love teaching others, and serve as a bridge between earthly and divine wisdom.',
+                    remediation: 'Study spiritual texts daily, practice meditation regularly, engage in self-reflection, pursue higher learning, teach others your knowledge, and wear amethyst or clear quartz. Chant "OM NAMAH SHIVAYA" to enhance spiritual awareness.'
+                },
+                8: {
+                    name: '物質成就 - Material Success & Achievement',
+                    chineseName: '艮卦 (Mountain Element)',
+                    element: 'Earth 土',
+                    direction: 'Northeast 東北',
+                    general: 'This position governs your relationship with material success, business acumen, and worldly achievements. It represents your ability to manifest prosperity and handle material responsibilities.',
+                    missing: 'You may struggle with material success and business matters. Money management could be challenging, and you might lack ambition for worldly achievements or feel disconnected from material goals.',
+                    present: 'You have a balanced relationship with material success. You can handle business matters adequately and achieve reasonable prosperity through consistent effort and practical decisions.',
+                    strong: 'You have exceptional business acumen and natural ability to achieve material success. You understand resource management, can build wealth effectively, and excel in commercial endeavors.',
+                    remediation: 'Learn finance and investment, set clear material goals, develop business skills, take calculated risks, practice abundance mindset, and wear citrine or pyrite. Use the affirmation "I attract abundance through ethical means and wise decisions."'
+                },
+                9: {
+                    name: '智慧服務 - Wisdom & Humanitarian Service',
+                    chineseName: '離卦 (Fire Element)',
+                    element: 'Fire 火',
+                    direction: 'South 南',
+                    general: 'This governs your wisdom, desire to serve humanity, and ability to see the bigger picture. It represents completion, universal love, and dedication to the greater good.',
+                    missing: 'You may lack wisdom and struggle to see beyond personal interests. Helping others might not come naturally, and you could be self-centered or have difficulty understanding universal principles.',
+                    present: 'You have moderate wisdom and can serve others when motivated. You understand the importance of helping humanity and can occasionally see beyond personal concerns to universal truths.',
+                    strong: 'You possess profound wisdom and a powerful drive to serve humanity. You naturally see the bigger picture, work for the greater good, and inspire others through your universal love and understanding.',
+                    remediation: 'Volunteer for humanitarian causes, practice compassion daily, study philosophy and universal principles, mentor others, donate time and resources, and wear clear quartz or diamond. Recite "LOKAH SAMASTAH SUKHINO BHAVANTU" (May all beings be happy and free).'
+                }
+            };
+            
+            // Display comprehensive analysis for all numbers
+            html += '<div class="interpretation-section">';
+            html += '<h4>🌟 Complete Numerical Analysis 完整數字分析</h4>';
+            
+            for (let i = 1; i <= 9; i++) {
+                const count = gridData[i].length;
+                const interp = interpretations[i];
+                let status, statusClass, interpretation;
+                
+                if (count === 0) {
+                    status = 'Missing 缺失';
+                    statusClass = 'missing';
+                    interpretation = interp.missing;
+                } else if (count === 1) {
+                    status = 'Present 現有';
+                    statusClass = 'present';
+                    interpretation = interp.present;
+                } else {
+                    status = `Strong 強勢 (${count} times)`;
+                    statusClass = 'strong';
+                    interpretation = interp.strong;
+                }
+                
+                html += `<div class="number-interpretation">
+                    <h5>${i} - ${interp.name}</h5>
+                    <div class="status ${statusClass}">${status}</div>
+                    <p><strong>元素方位:</strong> ${interp.chineseName} | ${interp.element} | ${interp.direction}</p>
+                    <p><strong>General Meaning:</strong> ${interp.general}</p>
+                    <p><strong>Your Personal Reading:</strong> ${interpretation}</p>`;
+                
+                // Add remediation only for missing numbers
+                if (count === 0) {
+                    html += `<div class="remediation">
+                        <h6>🔮 Sacred Remediation 神聖療法</h6>
+                        <p>${interp.remediation}</p>
+                    </div>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            // Overall life path analysis
+            const missingNumbers = [];
+            const strongNumbers = [];
+            
+            for (let i = 1; i <= 9; i++) {
+                if (gridData[i].length === 0) {
+                    missingNumbers.push(i);
+                } else if (gridData[i].length > 1) {
+                    strongNumbers.push(i);
+                }
+            }
+            
+            html += '<div class="interpretation-section">';
+            html += '<h4>🎯 Soul Path Analysis 靈魂道路分析</h4>';
+            
+            const missingCount = missingNumbers.length;
+            const strongCount = strongNumbers.length;
+            
+            html += '<div class="number-interpretation">';
+            
+            if (missingCount > 6) {
+                html += '<p><strong>Soul Journey:</strong> You have chosen a challenging but rewarding path of extensive spiritual development. Your soul is here to learn many lessons and grow tremendously. This lifetime offers immense opportunities for spiritual evolution. Focus on gradual, consistent improvement rather than trying to develop everything at once.</p>';
+            } else if (missingCount > 3) {
+                html += '<p><strong>Soul Journey:</strong> You have some specific areas requiring focused development. This suggests a balanced incarnation where you can work on key weaknesses while utilizing your natural strengths. Your spiritual growth will come through addressing these missing aspects.</p>';
+            } else if (missingCount > 0) {
+                html += '<p><strong>Soul Journey:</strong> You have a relatively evolved soul with few major areas needing development. Your primary focus should be on maximizing your strengths while gently developing any missing qualities. You likely have important work to do in service to others.</p>';
+            } else {
+                html += '<p><strong>Soul Journey:</strong> You possess a highly evolved soul with all numbers present. This suggests you are here to serve as a teacher, healer, or guide for others. Your challenge is to balance all these energies harmoniously and use them for the highest good.</p>';
+            }
+            
+            if (strongCount > 4) {
+                html += '<p><strong>Spiritual Gifts:</strong> You have been blessed with many natural talents and abilities. Be mindful not to become overly confident or neglect areas that need development. Your gifts are meant to serve not just yourself but humanity as a whole.</p>';
+            } else if (strongCount > 1) {
+                html += '<p><strong>Spiritual Gifts:</strong> Your natural strengths are your greatest assets for this lifetime. Build your life purpose around these talents while remaining humble and open to continuous learning and growth.</p>';
+            } else if (strongCount === 1) {
+                html += '<p><strong>Spiritual Gifts:</strong> You have one primary area of exceptional strength. This likely represents your main spiritual gift and purpose in this lifetime. Focus on developing this talent to its fullest potential.</p>';
+            } else {
+                html += '<p><strong>Spiritual Gifts:</strong> Your energy is evenly distributed, suggesting a well-balanced personality. Your gift lies in your ability to maintain harmony and moderation in all areas of life.</p>';
+            }
+            
+            // Karmic insights
+            html += '<p><strong>Karmic Insight:</strong> ';
+            if (missingNumbers.includes(1) && missingNumbers.includes(9)) {
+                html += 'Your soul is learning to balance self-expression with service to humanity. Focus on finding your authentic voice while dedicating your talents to the greater good.';
+            } else if (missingNumbers.includes(2) && missingNumbers.includes(8)) {
+                html += 'You are learning to balance intuitive wisdom with material success. Develop your psychic abilities while also learning practical business skills.';
+            } else if (missingNumbers.includes(4) && missingNumbers.includes(5)) {
+                html += 'Your challenge is balancing stability with freedom. Learn to create secure foundations while maintaining flexibility and openness to change.';
+            } else {
+                html += 'Your unique combination of present and missing numbers creates a specific karmic pattern designed for your soul\'s evolution in this lifetime.';
+            }
+            html += '</p>';
+            
+            html += '</div></div>';
+            
+            interpretationDiv.innerHTML = html;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
